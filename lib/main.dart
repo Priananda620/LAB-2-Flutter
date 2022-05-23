@@ -553,37 +553,37 @@ class RegisterRoute extends StatelessWidget {
 
     String base64Image = base64Encode(_image!.readAsBytesSync());
     // String base64Image = base64Encode(_image!.readAsBytesSync());
-    print(base64Image);
-    // http.post(
-    //     Uri.parse("http://10.19.88.204:8080/CONTINUOUSPROJ/api/register.php"),
-    //     body: {
-    //       "name": _prname,
-    //       "desc": _prdesc,
-    //       "price": _prprice,
-    //       "qty": _prqty,
-    //       "barcode": _prbarcode,
-    //       "type": dropdownvalue,
-    //       "image": base64Image,
-    //     }).then((response) {
-    //   print(response.body);
-    //   var data = jsonDecode(response.body);
-    //   if (response.statusCode == 200 && data['status'] == 'success') {
-    //     Fluttertoast.showToast(
-    //         msg: "Success",
-    //         toastLength: Toast.LENGTH_SHORT,
-    //         gravity: ToastGravity.BOTTOM,
-    //         timeInSecForIosWeb: 1,
-    //         fontSize: 16.0);
-    //     Navigator.of(context).pop();
-    //   } else {
-    //     Fluttertoast.showToast(
-    //         msg: data['status'],
-    //         toastLength: Toast.LENGTH_SHORT,
-    //         gravity: ToastGravity.BOTTOM,
-    //         timeInSecForIosWeb: 1,
-    //         fontSize: 16.0);
-    //   }
-    // });
+    // print(base64Image);
+    http.post(
+        Uri.parse("http://10.19.88.204:8080/CONTINUOUSPROJ/api/register.php"),
+        body: {
+          "name": _prname,
+          "desc": _prdesc,
+          "price": _prprice,
+          "qty": _prqty,
+          "barcode": _prbarcode,
+          "type": dropdownvalue,
+          "image": base64Image,
+        }).then((response) {
+      print(response.body);
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['status'] == 'success') {
+        Fluttertoast.showToast(
+            msg: "Success",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+        Navigator.of(context).pop();
+      } else {
+        Fluttertoast.showToast(
+            msg: data['status'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+      }
+    });
   }
 
   _getFromGallery() async {
