@@ -20,100 +20,131 @@ void main() {
 class HomeRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('priananda'),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 43, 43, 43),
         elevation: 0,
       ),
-      body: Container(
-          color: Color.fromARGB(255, 29, 29, 29),
-          child: Center(
-              child: Column(
-            children: <Widget>[
-              new Padding(padding: EdgeInsets.only(top: 40.0)),
-              Center(
-                child: Row(children: [
-                  Container(child: Image.asset('assets/logo/logo48.png')),
-                  Text(
-                    "My Tutor",
-                    style: GoogleFonts.chivo(
-                      textStyle: TextStyle(
-                          fontSize: 38,
-                          color: Color.fromARGB(255, 238, 245, 250),
-                          fontWeight: FontWeight.w700),
-                    ),
+      body: SizedBox(
+          height: screenHeight - keyboardHeight,
+          child: Container(
+              color: Color.fromARGB(255, 29, 29, 29),
+              child: Center(
+                  child: Column(
+                children: <Widget>[
+                  new Padding(padding: EdgeInsets.only(top: 40.0)),
+                  Center(
+                    child: Row(children: [
+                      Container(child: Image.asset('assets/logo/logo48.png')),
+                      Text(
+                        "My Tutor",
+                        style: GoogleFonts.chivo(
+                          textStyle: TextStyle(
+                              fontSize: 38,
+                              color: Color.fromARGB(255, 238, 245, 250),
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ], mainAxisAlignment: MainAxisAlignment.center),
                   ),
-                ], mainAxisAlignment: MainAxisAlignment.center),
-              ),
-              Divider(
-                height: 40.0,
-              ),
-              Container(
-                child: Image.asset(
-                    'assets/flat_illustration/undraw_work_time_re_hdyv.png'),
-              ),
-              new Padding(padding: EdgeInsets.only(top: 40.0)),
-              Container(
-                padding: const EdgeInsets.fromLTRB(15, 40, 15, 40),
-                child: Center(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      child: Text(
-                        'Login',
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              fontSize: 20,
-                              color: Color.fromARGB(255, 238, 245, 250),
-                              fontWeight: FontWeight.w500),
+                  Divider(
+                    height: 40.0,
+                  ),
+                  Container(
+                    child: Image.asset(
+                        'assets/flat_illustration/undraw_work_time_re_hdyv.png'),
+                  ),
+                  new Padding(padding: EdgeInsets.only(top: 40.0)),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(15, 40, 15, 40),
+                    child: Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          child: Text(
+                            'Login',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 238, 245, 250),
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/login');
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: Color.fromARGB(255, 0, 0, 168),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10),
+                              textStyle: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold)),
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 0, 0, 168),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
-                          textStyle: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold)),
-                    ),
-                    new Padding(padding: EdgeInsets.only(right: 10.0)),
-                    ElevatedButton(
-                      child: Text(
-                        'Sign Up',
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              fontSize: 20,
-                              color: Color.fromARGB(255, 238, 245, 250),
-                              fontWeight: FontWeight.w500),
+                        new Padding(padding: EdgeInsets.only(right: 10.0)),
+                        ElevatedButton(
+                          child: Text(
+                            'Sign Up',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 238, 245, 250),
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/register');
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: Color.fromARGB(255, 0, 0, 168),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10),
+                              textStyle: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold)),
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/register');
-                      },
-                      style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 0, 0, 168),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
-                          textStyle: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold)),
-                    ),
-                  ],
-                )),
-              )
-            ],
-          ))),
+                      ],
+                    )),
+                  )
+                ],
+              )))),
     );
   }
 }
 
 class RegisterRoute extends StatelessWidget {
+  var _image;
+  final TextEditingController _emailRegisCOntroller = TextEditingController();
+  final TextEditingController _usernameRegisController =
+      TextEditingController();
+  final TextEditingController _phoneRegisController = TextEditingController();
+  final TextEditingController _addressRegisController = TextEditingController();
+
+  final TextEditingController _passwordRegisController =
+      TextEditingController();
+  final TextEditingController _password2RegisController =
+      TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  void dispose() {
+    _emailRegisCOntroller.dispose();
+    _usernameRegisController.dispose();
+    _phoneRegisController.dispose();
+    _addressRegisController.dispose();
+    _passwordRegisController.dispose();
+    _password2RegisController.dispose();
+    // super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
     Color hexToColor(String code) {
       return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
     }
@@ -122,259 +153,362 @@ class RegisterRoute extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: "Welcome to MyTutor",
         theme: ThemeData().copyWith(
-            scaffoldBackgroundColor: Colors.green,
+            // scaffoldBackgroundColor: Colors.green,
             colorScheme: ThemeData()
                 .colorScheme
                 .copyWith(primary: hexToColor("#F64C72"))),
         // ignore: unnecessary_new
-        home: new Material(
-            child: new Container(
-                padding: const EdgeInsets.all(20.0),
-                color: Color.fromARGB(255, 43, 43, 43),
+        home: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: new SizedBox(
+                height: (screenHeight - keyboardHeight),
                 child: new Container(
-                  child: new Center(
-                      child: new SingleChildScrollView(
-                          child: new Column(children: [
-                    new Padding(padding: EdgeInsets.only(top: 100.0)),
-                    new Text(
-                      'Sign Up',
-                      style: new TextStyle(
-                          color: hexToColor("#eef5fa"), fontSize: 25.0),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      decoration: new InputDecoration(
-                        labelText: "Enter Email",
-                        labelStyle: TextStyle(color: hexToColor("#eef5fa")),
-                        prefixIcon: Icon(Icons.email),
-                        fillColor: Colors.orange,
-                        filled: true,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(
-                            color: hexToColor("#eef5fa"),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(
-                            color: hexToColor("#eef5fa"),
-                            width: 2.0,
-                          ),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Email cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      decoration: new InputDecoration(
-                        labelText: "Enter Username",
-                        prefixIcon: Icon(Icons.person_add),
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Username cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      decoration: new InputDecoration(
-                        labelText: "Enter Phone",
-                        prefixIcon: Icon(Icons.phone),
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Phone cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      obscureText: true,
-                      decoration: new InputDecoration(
-                        labelText: "Enter Address",
-                        prefixIcon: Icon(Icons.house),
+                    color: Color.fromARGB(255, 43, 43, 43),
+                    child: new Container(
+                      child: new Center(
+                          child: new SingleChildScrollView(
+                              physics: ClampingScrollPhysics(),
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              child: new Column(children: [
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 100.0)),
+                                new Text(
+                                  'Sign Up',
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa"),
+                                      fontSize: 25.0),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  controller: _emailRegisCOntroller,
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Email",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.email,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  controller: _usernameRegisController,
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Username",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.account_box,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  controller: _phoneRegisController,
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Phone",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.phone,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.phone,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  controller: _addressRegisController,
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Address",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.home,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  minLines: 1,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 4,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  decoration: new InputDecoration(
+                                    labelText: "Profile Picture",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.image,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  controller: _passwordRegisController,
+                                  obscureText: true,
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Password",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.security,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  controller: _password2RegisController,
+                                  obscureText: true,
+                                  decoration: new InputDecoration(
+                                    labelText: "Confirm Password",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.security,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                //////////
+                                ////////////
+                                /////////////
+                                /////////////
+                                ///////////////
+                                //////////////////////////////
+                                ////////////////////////////////////////
+                                ///////////////////////////////////////////////////
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    'Sign Up',
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 238, 245, 250),
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
 
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Address cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      //keyboardType: TextInputType.visiblePassword,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      obscureText: true,
-                      decoration: new InputDecoration(
-                        labelText: "Profile Picture",
-                        prefixIcon: Icon(Icons.image),
-
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Profile Picture cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      //keyboardType: TextInputType.visiblePassword,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      obscureText: true,
-                      decoration: new InputDecoration(
-                        labelText: "Enter Password",
-                        prefixIcon: Icon(Icons.security),
-
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Password cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      //keyboardType: TextInputType.visiblePassword,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      obscureText: true,
-                      decoration: new InputDecoration(
-                        labelText: "Confirm Password",
-                        prefixIcon: Icon(Icons.security),
-
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Password cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      //keyboardType: TextInputType.visiblePassword,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    // ElevatedButton(
-                    //   child: Text(
-                    //     'Sign Up',
-                    //     style: GoogleFonts.montserrat(
-                    //       textStyle: TextStyle(
-                    //           fontSize: 20,
-                    //           color: Color.fromARGB(255, 238, 245, 250),
-                    //           fontWeight: FontWeight.w500),
-                    //     ),
-                    //   ),
-                    //   onPressed: () {
-                    //     Navigator.pushNamed(context, '/register');
-                    //   },
-                    //   style: ElevatedButton.styleFrom(
-                    //       primary: Color.fromARGB(255, 0, 0, 168),
-                    //       padding: EdgeInsets.symmetric(
-                    //           horizontal: 30, vertical: 10),
-                    //       textStyle: TextStyle(
-                    //           fontSize: 30, fontWeight: FontWeight.bold)),
-                    // ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Sign Up',
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              fontSize: 20,
-                              color: Color.fromARGB(255, 238, 245, 250),
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-
-                      //style: new TextStyle(color: hexToColor("#F2A03D"), fontSize: 25.0),),
-                      style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 0, 0, 168),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
-                          textStyle: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold)),
-                    ),
-                  ]))),
-                ))));
+                                  //style: new TextStyle(color: hexToColor("#F2A03D"), fontSize: 25.0),),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Color.fromARGB(255, 0, 0, 168),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 10),
+                                      textStyle: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ]))),
+                    )))));
   }
 }
 
@@ -405,7 +539,10 @@ class LoginRoute extends StatelessWidget {
                     new TextFormField(
                       decoration: new InputDecoration(
                         labelText: "Enter Email",
-                        prefixIcon: Icon(Icons.email),
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: hexToColor("#F64C72"),
+                        ),
                         fillColor: Colors.white,
                         border: new OutlineInputBorder(
                           borderRadius: new BorderRadius.circular(10.0),
@@ -413,12 +550,11 @@ class LoginRoute extends StatelessWidget {
                         ),
                         //fillColor: Colors.green
                       ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Email cannot be empty";
-                        } else {
-                          return null;
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter valid product name';
                         }
+                        return null;
                       },
                       keyboardType: TextInputType.emailAddress,
                       style: new TextStyle(
@@ -439,12 +575,11 @@ class LoginRoute extends StatelessWidget {
                         ),
                         //fillColor: Colors.green
                       ),
-                      validator: (val) {
-                        if (val!.length == 0) {
-                          return "Password cannot be empty";
-                        } else {
-                          return null;
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter valid product name';
                         }
+                        return null;
                       },
                       //keyboardType: TextInputType.visiblePassword,
                       style: new TextStyle(
