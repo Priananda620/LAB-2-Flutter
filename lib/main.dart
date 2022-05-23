@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_is_empty, prefer_const_constructors, avoid_unnecessary_containers, unnecessary_new
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 //import 'package:url_launcher/url_launcher.dart';
 
@@ -143,6 +148,7 @@ class RegisterRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     Color hexToColor(String code) {
@@ -350,44 +356,68 @@ class RegisterRoute extends StatelessWidget {
                                 ),
                                 new Padding(
                                     padding: EdgeInsets.only(top: 35.0)),
-                                new TextFormField(
-                                  decoration: new InputDecoration(
-                                    labelText: "Profile Picture",
-                                    labelStyle:
-                                        TextStyle(color: hexToColor("#eef5fa")),
-                                    prefixIcon: Icon(
-                                      Icons.image,
-                                      color: hexToColor("#F64C72"),
-                                    ),
-                                    fillColor: hexToColor("#1d1d1d"),
-                                    filled: true,
-                                    border: new OutlineInputBorder(
-                                      borderRadius:
-                                          new BorderRadius.circular(10.0),
-                                      borderSide: new BorderSide(),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: BorderSide(
-                                          color: hexToColor("#eef5fa"),
-                                          width: 1.5),
-                                    ),
-                                    // enabledBorder: OutlineInputBorder(
-                                    //   borderRadius: BorderRadius.circular(10.0),
-                                    //   borderSide: BorderSide(
-                                    //       color: hexToColor("#eef5fa"), width: 0),
-                                    // ),
-                                    //fillColor: Colors.green
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter valid product name';
-                                    }
-                                    return null;
+                                // new TextFormField(
+                                //   decoration: new InputDecoration(
+                                //     labelText: "Profile Picture",
+                                //     labelStyle:
+                                //         TextStyle(color: hexToColor("#eef5fa")),
+                                //     prefixIcon: Icon(
+                                //       Icons.image,
+                                //       color: hexToColor("#F64C72"),
+                                //     ),
+                                //     fillColor: hexToColor("#1d1d1d"),
+                                //     filled: true,
+                                //     border: new OutlineInputBorder(
+                                //       borderRadius:
+                                //           new BorderRadius.circular(10.0),
+                                //       borderSide: new BorderSide(),
+                                //     ),
+                                //     focusedBorder: OutlineInputBorder(
+                                //       borderRadius: BorderRadius.circular(10.0),
+                                //       borderSide: BorderSide(
+                                //           color: hexToColor("#eef5fa"),
+                                //           width: 1.5),
+                                //     ),
+                                //     // enabledBorder: OutlineInputBorder(
+                                //     //   borderRadius: BorderRadius.circular(10.0),
+                                //     //   borderSide: BorderSide(
+                                //     //       color: hexToColor("#eef5fa"), width: 0),
+                                //     // ),
+                                //     //fillColor: Colors.green
+                                //   ),
+                                //   validator: (value) {
+                                //     if (value == null || value.isEmpty) {
+                                //       return 'Please enter valid product name';
+                                //     }
+                                //     return null;
+                                //   },
+                                //   keyboardType: TextInputType.emailAddress,
+                                //   style: new TextStyle(
+                                //       color: hexToColor("#eef5fa")),
+                                // ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _getFromGallery();
                                   },
-                                  keyboardType: TextInputType.emailAddress,
-                                  style: new TextStyle(
-                                      color: hexToColor("#eef5fa")),
+                                  child: Text(
+                                    'Upload Image',
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 238, 245, 250),
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+
+                                  //style: new TextStyle(color: hexToColor("#F2A03D"), fontSize: 25.0),),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Color.fromARGB(255, 0, 0, 168),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 10),
+                                      textStyle: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold)),
                                 ),
                                 new Padding(
                                     padding: EdgeInsets.only(top: 35.0)),
@@ -486,7 +516,9 @@ class RegisterRoute extends StatelessWidget {
                                 ////////////////////////////////////////
                                 ///////////////////////////////////////////////////
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    _insertProduct();
+                                  },
                                   child: Text(
                                     'Sign Up',
                                     style: GoogleFonts.montserrat(
@@ -509,6 +541,60 @@ class RegisterRoute extends StatelessWidget {
                                 ),
                               ]))),
                     )))));
+  }
+
+  void _insertProduct() {
+    String _email = _emailRegisCOntroller.text;
+    String _username = _usernameRegisController.text;
+    String _phone = _phoneRegisController.text;
+    String _address = _addressRegisController.text;
+    String _pass = _passwordRegisController.text;
+    String _pass2 = _password2RegisController.text;
+
+    String base64Image = base64Encode(_image!.readAsBytesSync());
+    // String base64Image = base64Encode(_image!.readAsBytesSync());
+    print(base64Image);
+    // http.post(
+    //     Uri.parse("http://10.19.88.204:8080/CONTINUOUSPROJ/api/register.php"),
+    //     body: {
+    //       "name": _prname,
+    //       "desc": _prdesc,
+    //       "price": _prprice,
+    //       "qty": _prqty,
+    //       "barcode": _prbarcode,
+    //       "type": dropdownvalue,
+    //       "image": base64Image,
+    //     }).then((response) {
+    //   print(response.body);
+    //   var data = jsonDecode(response.body);
+    //   if (response.statusCode == 200 && data['status'] == 'success') {
+    //     Fluttertoast.showToast(
+    //         msg: "Success",
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIosWeb: 1,
+    //         fontSize: 16.0);
+    //     Navigator.of(context).pop();
+    //   } else {
+    //     Fluttertoast.showToast(
+    //         msg: data['status'],
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIosWeb: 1,
+    //         fontSize: 16.0);
+    //   }
+    // });
+  }
+
+  _getFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+    }
   }
 }
 
