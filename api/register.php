@@ -18,7 +18,7 @@ $connect = new mysqli($db_host, $db_username, $db_password, $db_name);
 header('Content-Type: application/json');
 
 if (empty($_POST['email']) || empty($_POST['username']) || empty($_POST['phone']) || empty($_POST['password']) || empty($_POST['verify_pass']) || empty($_POST['address']) || empty($_POST['user_image64']) || $connect->connect_error) {
-    echo json_encode(array('success' => false, 'no-data' => true));
+    echo json_encode(array('success' => false, 'no_data' => true));
 } else {
     $username = addslashes($_POST['username']);
     $email = addslashes($_POST['email']);

@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
+import 'package:mime/mime.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -517,7 +518,7 @@ class RegisterRoute extends StatelessWidget {
                                 ///////////////////////////////////////////////////
                                 ElevatedButton(
                                   onPressed: () async {
-                                    _insertProduct();
+                                    _insertUser();
                                   },
                                   child: Text(
                                     'Sign Up',
@@ -543,7 +544,7 @@ class RegisterRoute extends StatelessWidget {
                     )))));
   }
 
-  void _insertProduct() {
+  void _insertUser() {
     String _email = _emailRegisCOntroller.text;
     String _username = _usernameRegisController.text;
     String _phone = _phoneRegisController.text;
@@ -551,43 +552,89 @@ class RegisterRoute extends StatelessWidget {
     String _pass = _passwordRegisController.text;
     String _pass2 = _password2RegisController.text;
 
-    String base64Image = base64Encode(_image!.readAsBytesSync());
-    // String base64Image = base64Encode(_image!.readAsBytesSync());
-    // print(base64Image);
-    http.post(
-        Uri.parse("http://10.19.88.204:8080/CONTINUOUSPROJ/api/register.php"),
-        body: {
-          "name": _prname,
-          "desc": _prdesc,
-          "price": _prprice,
-          "qty": _prqty,
-          "barcode": _prbarcode,
-          "type": dropdownvalue,
-          "image": base64Image,
-        }).then((response) {
-      print(response.body);
-      var data = jsonDecode(response.body);
-      if (response.statusCode == 200 && data['status'] == 'success') {
-        Fluttertoast.showToast(
-            msg: "Success",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-        Navigator.of(context).pop();
-      } else {
-        Fluttertoast.showToast(
-            msg: data['status'],
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-      }
-    });
+    if (_image != null) {
+      final mimeType = lookupMimeType(_image!.path);
+      final bytes = File(_image!.path).readAsBytesSync();
+      String base64Image =
+          "data:" + mimeType! + ";base64," + base64Encode(bytes);
+
+      // String img64 = base64Encode(bytes);
+      // String base64Encoded = base64Encode(_image!.readAsBytesSync());
+      // String base64Image = base64Encode(_image!.readAsBytesSync());
+      print(base64Image);
+      http.post(
+          Uri.parse("http://10.19.88.204:8080/CONTINUOUSPROJ/api/register.php"),
+          body: {
+            "email": _email,
+            "username": _username,
+            "phone": _phone,
+            "address": _address,
+            "password": _pass,
+            "verify_pass": _pass2,
+            "user_image64": base64Image,
+          }).then((response) {
+        print(response.body);
+        var data = jsonDecode(response.body);
+        if (response.statusCode == 200 &&
+            data['success'] &&
+            data['account_created'] &&
+            data['account_data'] != null) {
+          print("11111111111");
+          Fluttertoast.showToast(
+              msg: "Success Register, account_data inserted to db",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0);
+          // Navigator.of(context).pop();
+        } else if (data['no_data'] && !data['success']) {
+          print("222222222222");
+          Fluttertoast.showToast(
+              msg: "All input fields must be filled",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0);
+        } else if (data['password_verify_unmatch'] && !data['success']) {
+          print("333333333333");
+          Fluttertoast.showToast(
+              msg: "verify password must be match",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0);
+        } else if (data['password_length_unmatch'] && !data['success']) {
+          print("44444444444");
+          Fluttertoast.showToast(
+              msg: "password must be 8 chars minimum",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0);
+        } else {
+          print("5555555555555555");
+          Fluttertoast.showToast(
+              msg: "fail",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0);
+        }
+      });
+    } else {
+      print("222222222222");
+      Fluttertoast.showToast(
+          msg: "All input fields must be filled",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0);
+    }
   }
 
   _getFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
       maxWidth: 1800,
       maxHeight: 1800,
@@ -601,92 +648,161 @@ class RegisterRoute extends StatelessWidget {
 class LoginRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
     Color hexToColor(String code) {
       return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
     }
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: "Welcome to Flutter",
-        home: new Material(
-            child: new Container(
-                padding: const EdgeInsets.all(30.0),
-                color: Colors.white,
+        title: "Login to MyTutor",
+        theme: ThemeData().copyWith(
+            // scaffoldBackgroundColor: Colors.green,
+            colorScheme: ThemeData()
+                .colorScheme
+                .copyWith(primary: hexToColor("#F64C72"))),
+        // ignore: unnecessary_new
+        home: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: new SizedBox(
+                height: (screenHeight - keyboardHeight),
                 child: new Container(
-                  child: new Center(
-                      child: new Column(children: [
-                    new Padding(padding: EdgeInsets.only(top: 140.0)),
-                    new Text(
-                      'Log In',
-                      style: new TextStyle(
-                          color: hexToColor("#F2A03D"), fontSize: 25.0),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 50.0)),
-                    new TextFormField(
-                      decoration: new InputDecoration(
-                        labelText: "Enter Email",
-                        prefixIcon: Icon(
-                          Icons.email,
-                          color: hexToColor("#F64C72"),
-                        ),
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter valid product name';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    new TextFormField(
-                      obscureText: true,
-                      decoration: new InputDecoration(
-                        labelText: "Enter Password",
-                        prefixIcon: Icon(Icons.security),
+                    color: Color.fromARGB(255, 43, 43, 43),
+                    child: new Container(
+                      child: new Center(
+                          child: new SingleChildScrollView(
+                              physics: ClampingScrollPhysics(),
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              child: new Column(children: [
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 100.0)),
+                                new Text(
+                                  'Log in',
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa"),
+                                      fontSize: 25.0),
+                                ),
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Username",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.email,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
 
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter valid product name';
-                        }
-                        return null;
-                      },
-                      //keyboardType: TextInputType.visiblePassword,
-                      style: new TextStyle(
-                        fontFamily: "Poppins",
-                      ),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 35.0)),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Log In'),
-                      //style: new TextStyle(color: hexToColor("#F2A03D"), fontSize: 25.0),),
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.orangeAccent[100],
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(12), // <-- Radius
-                          ),
-                          textStyle: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold)),
-                    ),
-                  ])),
-                ))));
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                new TextFormField(
+                                  obscureText: true,
+                                  decoration: new InputDecoration(
+                                    labelText: "Enter Password",
+                                    labelStyle:
+                                        TextStyle(color: hexToColor("#eef5fa")),
+                                    prefixIcon: Icon(
+                                      Icons.security,
+                                      color: hexToColor("#F64C72"),
+                                    ),
+                                    fillColor: hexToColor("#1d1d1d"),
+                                    filled: true,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(
+                                          color: hexToColor("#eef5fa"),
+                                          width: 1.5),
+                                    ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius: BorderRadius.circular(10.0),
+                                    //   borderSide: BorderSide(
+                                    //       color: hexToColor("#eef5fa"), width: 0),
+                                    // ),
+                                    //fillColor: Colors.green
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter valid product name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                  style: new TextStyle(
+                                      color: hexToColor("#eef5fa")),
+                                ),
+
+                                new Padding(
+                                    padding: EdgeInsets.only(top: 35.0)),
+                                //////////
+                                ////////////
+                                /////////////
+                                /////////////
+                                ///////////////
+                                //////////////////////////////
+                                ////////////////////////////////////////
+                                ///////////////////////////////////////////////////
+                                ElevatedButton(
+                                  onPressed: () async {},
+                                  child: Text(
+                                    'Login',
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 238, 245, 250),
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+
+                                  //style: new TextStyle(color: hexToColor("#F2A03D"), fontSize: 25.0),),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Color.fromARGB(255, 0, 0, 168),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 10),
+                                      textStyle: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ]))),
+                    )))));
   }
 }
