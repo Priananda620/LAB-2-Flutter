@@ -55,7 +55,7 @@ if (empty($_POST['email']) || empty($_POST['username']) || empty($_POST['phone']
         $file_name = guidv4() . '.' . $extension;
         $path = 'assets/user_images/' . $username . "_" . $file_name;
 
-        $sql = "INSERT INTO `users`(`email`, `username`, `phone`, `hased_password`, `address`, `user_image`, `ip`, `org`, `city`) VALUES (?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users`(`email`, `username`, `phone`, `hashed_password`, `address`, `user_image`, `ip`, `org`, `city`) VALUES (?,?,?,?,?,?,?,?,?)";
 
         $stmt = $connect->prepare($sql);
 
@@ -64,9 +64,9 @@ if (empty($_POST['email']) || empty($_POST['username']) || empty($_POST['phone']
             $city = null;
         }
 
-        $hased_pass = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_pass = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt->bind_param("sssssssss", $email, $username, $phone, $hased_pass, $address, $file_name, $ip, $org, $city);
+        $stmt->bind_param("sssssssss", $email, $username, $phone, $hashed_pass, $address, $file_name, $ip, $org, $city);
 
         if ($stmt->execute()) {
             /////////////////////////////////////
